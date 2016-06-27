@@ -124,6 +124,15 @@ class Basic extends Component {
                   <pre> {'<DateTimeField mode="date" />'} </pre>
               </div>
             </div>
+            <div className="row">
+              <div className="col-xs-12">
+                  disabled
+                  <DateTimeField
+                      disabled={true}
+                      />
+                  <pre> {'<DateTimeField disabled={true} />'} </pre>
+              </div>
+            </div>
           </div>
       );
    }
