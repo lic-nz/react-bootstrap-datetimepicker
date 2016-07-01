@@ -11,6 +11,7 @@ export default class DateTimeField extends Component {
     showToday: true,
     viewMode: "days",
     daysOfWeekDisabled: [],
+    disabled: false,
     size: Constants.SIZE_MEDIUM,
     mode: Constants.MODE_DATETIME,
     zIndex: 999,
@@ -41,6 +42,7 @@ export default class DateTimeField extends Component {
     inputProps: PropTypes.object,
     inputFormat: PropTypes.string,
     defaultText: PropTypes.string,
+    disabled: PropTypes.bool,
     mode: PropTypes.oneOf([Constants.MODE_DATE, Constants.MODE_DATETIME, Constants.MODE_TIME]),
     minDate: PropTypes.object,
     maxDate: PropTypes.object,
@@ -258,7 +260,7 @@ export default class DateTimeField extends Component {
 
   onClick = () => {
     let classes, gBCR, offset, placePosition, scrollTop, styles;
-    if (this.state.showPicker) {
+    if (this.state.showPicker || this.props.disabled) {
       return this.closePicker();
     } else {
       this.setState({
@@ -349,6 +351,7 @@ export default class DateTimeField extends Component {
                   addMonth={this.addMonth}
                   addYear={this.addYear}
                   daysOfWeekDisabled={this.props.daysOfWeekDisabled}
+                  disabled={this.props.disabled}
                   maxDate={this.props.maxDate}
                   minDate={this.props.minDate}
                   mode={this.props.mode}
@@ -375,8 +378,8 @@ export default class DateTimeField extends Component {
                   widgetStyle={this.state.widgetStyle}
             />
             <div className={"input-group date " + this.size()} ref="datetimepicker">
-              <input className="form-control" onChange={this.onChange} type="text" value={this.state.inputValue} {...this.props.inputProps}/>
-              <span className="input-group-addon" onBlur={this.onBlur} onClick={this.onClick} ref="dtpbutton">
+              <input className="form-control" onChange={this.onChange} type="text" value={this.state.inputValue} disabled={this.props.disabled} {...this.props.inputProps}/>
+              <span className={"input-group-addon " + (this.props.disabled ? "disabled" : "")} onBlur={this.onBlur} onClick={this.onClick} ref="dtpbutton">
                 <span className={classnames("glyphicon", this.state.buttonIcon)} />
               </span>
             </div>

@@ -44,6 +44,7 @@ DateTimeField
 | **maxDate** | moment | undefined | The latest date allowed for entry in the calendar view. |
 | **mode** | string | undefined | Allows to selectively display only the time picker ('time') or the date picker ('date') |
 | **defaultText** | string | {dateTime} | Sets the initial value. Could be an empty string, or helper text. |
+| **disabled** | bool | {bool} | Disables the input field and the date time picker |
 
 Update Warning
 ===============================

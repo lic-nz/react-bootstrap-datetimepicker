@@ -185,6 +185,11 @@
 .bootstrap-datetimepicker-widget thead tr:first-child th:hover {
   background: #eeeeee;
 }
+.input-group.date .input-group-addon.disabled,
+.input-group.date .input-group-addon.disabled .glyphicon
+{
+  cursor: not-allowed;
+}
 .input-group.date .input-group-addon span {
   display: block;
   cursor: pointer;
