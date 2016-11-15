@@ -134,9 +134,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        left: -9999,
 	        zIndex: "9999 !important"
 	      },
-	      viewDate: (0, _moment2["default"])(this.props.dateTime, this.props.format, true).startOf("month"),
-	      selectedDate: (0, _moment2["default"])(this.props.dateTime, this.props.format, true),
-	      inputValue: typeof this.props.defaultText !== "undefined" ? this.props.defaultText : (0, _moment2["default"])(this.props.dateTime, this.props.format, true).format(this.resolvePropsInputFormat())
+	      viewDate: (0, _moment2["default"])(this.props.dateTime, this.props.format, true).isValid() ? (0, _moment2["default"])(this.props.dateTime, this.props.format, true).startOf("month") : (0, _moment2["default"])().startOf("month"),
+	      selectedDate: (0, _moment2["default"])(this.props.dateTime, this.props.format, true).isValid() ? (0, _moment2["default"])(this.props.dateTime, this.props.format, true) : (0, _moment2["default"])(),
+	      inputValue: typeof this.props.defaultText !== "undefined" ? this.props.defaultText :
+	      // Set the input value to the calculated date if the date is valid, otherwise set it to the default value
+	      !(0, _moment2["default"])(this.props.dateTime, this.props.format, true).isValid() ? this.props.defaultText || "" : (0, _moment2["default"])(this.props.dateTime, this.props.format, true).format(this.resolvePropsInputFormat())
+
 	    };
 
 	    this.componentWillReceiveProps = function (nextProps) {
@@ -146,10 +149,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        state.inputValue = (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true).format(nextProps.inputFormat);
 	      }
 
-	      if (nextProps.dateTime !== _this.props.dateTime && (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true).isValid()) {
-	        state.viewDate = (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true).startOf("month");
-	        state.selectedDate = (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true);
-	        state.inputValue = (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true).format(nextProps.inputFormat ? nextProps.inputFormat : _this.state.inputFormat);
+	      if (nextProps.dateTime !== _this.props.dateTime) {
+	        if (nextProps.dateTime && (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true).isValid()) {
+	          state.viewDate = (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true).startOf("month");
+	          state.selectedDate = (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true);
+	          state.inputValue = (0, _moment2["default"])(nextProps.dateTime, nextProps.format, true).format(nextProps.inputFormat ? nextProps.inputFormat : _this.state.inputFormat);
+	        } else {
+	          state.inputValue = "";
+	        }
 	      }
 	      return _this.setState(state);
 	    };
@@ -166,12 +173,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _this.setState({
 	        inputValue: value
 	      }, function () {
+	        if (!(0, _moment2["default"])(value, this.state.inputFormat, true).isValid()) {
+	          return this.props.onChange(null, value);
+	        }
 	        return this.props.onChange((0, _moment2["default"])(this.state.inputValue, this.state.inputFormat, true).format(this.props.format), value);
 	      });
 	    };
 
 	    this.getValue = function () {
-	      return (0, _moment2["default"])(_this.state.inputValue, _this.props.inputFormat, true).format(_this.props.format);
+	      return (0, _moment2["default"])(_this.state.inputValue, _this.state.inputFormat, true).format(_this.props.format);
 	    };
 
 	    this.setSelectedDate = function (e) {
@@ -184,7 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          selectedDate: _this.state.viewDate.clone().month(month).date(parseInt(e.target.innerHTML)).hour(_this.state.selectedDate.hours()).minute(_this.state.selectedDate.minutes())
 	        }, function () {
 	          this.closePicker();
-	          this.props.onChange(this.state.selectedDate.format(this.props.format));
+	          this.props.onChange(this.state.selectedDate.format(this.props.format), this.state.selectedDate.format(this.state.inputFormat));
 	          return this.setState({
 	            inputValue: this.state.selectedDate.format(this.state.inputFormat)
 	          });
@@ -416,7 +426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      return _react2["default"].createElement(
 	        "div",
-	        null,
+	        { style: { position: "relative" } },
 	        this.renderOverlay(),
 	        _react2["default"].createElement(_DateTimePickerJs2["default"], {
 	          addDecade: this.addDecade,
